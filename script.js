@@ -12,6 +12,9 @@ document.querySelector("#undo").addEventListener("click", undo);
 document.querySelector("#clear").addEventListener("click", clear);
 
 function type(e) {
+    if (e.target.value === "." && numberA.join("").includes(".") || numberB.join("").includes(".")) {
+        return;
+    }
     if (operator) {
         numberB.push(e.target.value);
         setDisplayValue();
@@ -33,6 +36,9 @@ function undo() {
 }
 
 function setOperator(e) {
+    if (!numberA.length && !result) {
+        return;
+    }
     if (numberB.length >= 1) {
         doOperation();
         operator = e.target.value;
@@ -78,20 +84,20 @@ function emptyData() {
 }
 
 function add(a, b) {
-    return a + b;
+    return +(a + b).toFixed(6);
 }
 
 function subtract(a, b) {
-    return a - b;
+    return +(a - b).toFixed(6);
 }
 
 function multiply(a, b) {
-    return a * b;
+    return +(a * b).toFixed(6);
 }
 
 function divide(a, b) {
     if (b === 0) return "nope";
-    return a / b;
+    return +(a / b).toFixed(6);
 }
 
 function operate(a, b, o) {
