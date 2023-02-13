@@ -1,32 +1,81 @@
 const display = document.querySelector("#display");
-let displayValue = "";
-const number = [];
-const operation = [];
+const numberA = [];
+const numberB = [];
+let result;
+let operator = "";
+let displayValue;
 
 
 document.querySelectorAll(".digit").forEach(x => x.addEventListener("click", type));
 document.querySelectorAll(".operator").forEach(x => x.addEventListener("click", type));
-document.querySelectorAll(".operator").forEach(x => x.addEventListener("click", pushToOperation));
+document.querySelectorAll(".operator").forEach(x => x.addEventListener("click", setOperator));
 document.querySelector("#equal").addEventListener("click", createOperation);
+document.querySelector("#undo").addEventListener("click", undo);
+document.querySelector("#clear").addEventListener("click", clear);
 
-function type(e){
-    if (e.target.className === "digit") number.push(e.target.value);
-    displayValue += e.target.value;
+function type(e) {
+    if (operator) {
+        if (e.target.className === "digit") numberB.push(e.target.value);
+        setDisplayValue();
+    } else {
+        if (e.target.className === "digit") {
+            result = undefined;
+            numberA.push(e.target.value);
+        }
+        setDisplayValue();
+    }
+}
+
+function undo() {
+    if (operator) {
+        numberB.pop();
+        setDisplayValue();
+    } else {
+        numberA.pop();
+        setDisplayValue();
+    }
+}
+
+function setOperator(e) {
+    if (numberB.length >= 1) {
+        return;
+    }
+    operator = e.target.value;
+    setDisplayValue();
+}
+
+function setDisplayValue() {
+    if (typeof result === "number") {
+        displayValue = `${result} ${operator} ${numberB.join("")}`;
+        display.textContent = displayValue;
+        return;
+    }
+    displayValue = `${numberA.join("")} ${operator} ${numberB.join("")}`;
     display.textContent = displayValue;
 }
 
-function pushToOperation(e) {
-    operation.push(+number.join(""));
-    number.splice(0, number.length);
-    operation.push(e.target.value);
+function createOperation() {
+    if (typeof result === "number") {
+        result = operate(result, +numberB.join(""), operator);
+        display.textContent = result;
+        emptyData();
+        return;
+    }
+    result = operate(+numberA.join(""), +numberB.join(""), operator);
+    display.textContent = result;
+    emptyData();
 }
 
-function createOperation() {
-    operation.push(+number.join(""));
-    number.splice(0, number.length);
-    display.textContent = operate(operation[0], operation[2], operation[1]);
-    operation.splice(0, operation.length);
-    displayValue = "";
+function clear() {
+    result = undefined;
+    emptyData();
+    setDisplayValue();
+}
+
+function emptyData() {
+    numberA.splice(0, numberA.length);
+    numberB.splice(0, numberB.length);
+    operator = "";
 }
 
 function add(a, b) {
@@ -42,7 +91,7 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-    if (a === 0 || b === 0) return "nope";
+    if (b === 0) return "nope";
     return a / b;
 }
 
