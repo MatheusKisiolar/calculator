@@ -5,23 +5,19 @@ let result;
 let operator = "";
 let displayValue;
 
-
 document.querySelectorAll(".digit").forEach(x => x.addEventListener("click", type));
-document.querySelectorAll(".operator").forEach(x => x.addEventListener("click", type));
 document.querySelectorAll(".operator").forEach(x => x.addEventListener("click", setOperator));
-document.querySelector("#equal").addEventListener("click", createOperation);
+document.querySelector("#equal").addEventListener("click", doOperation);
 document.querySelector("#undo").addEventListener("click", undo);
 document.querySelector("#clear").addEventListener("click", clear);
 
 function type(e) {
     if (operator) {
-        if (e.target.className === "digit") numberB.push(e.target.value);
+        numberB.push(e.target.value);
         setDisplayValue();
     } else {
-        if (e.target.className === "digit") {
-            result = undefined;
-            numberA.push(e.target.value);
-        }
+        result = undefined;
+        numberA.push(e.target.value);
         setDisplayValue();
     }
 }
@@ -38,6 +34,9 @@ function undo() {
 
 function setOperator(e) {
     if (numberB.length >= 1) {
+        doOperation();
+        operator = e.target.value;
+        setDisplayValue();
         return;
     }
     operator = e.target.value;
@@ -54,7 +53,7 @@ function setDisplayValue() {
     display.textContent = displayValue;
 }
 
-function createOperation() {
+function doOperation() {
     if (typeof result === "number") {
         result = operate(result, +numberB.join(""), operator);
         display.textContent = result;
