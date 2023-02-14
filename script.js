@@ -16,6 +16,10 @@ document.addEventListener("keydown", (e) => {
     document.querySelectorAll(".digit, .operator").forEach(button => {
         if (e.key === button.value) {
             button.click();
+        } else if (e.key === "/" && button.value === "÷") {
+            button.click();
+        } else if (e.key === "*" && button.value === "×") {
+            button.click();
         }
     });
     document.querySelectorAll("#clear, #undo, #equal").forEach(button => {
@@ -39,10 +43,9 @@ document.addEventListener("keydown", (e) => {
 
 
 function type(e) {
-    if (numberA[0] === "0" && numberA.length === 1 && !(e.target.value === "0") && !(e.target.value === ".")){
-        numberA.pop();
+    if (numberA[0] === "0" && numberA.length === 1 && !(e.target.value === "0") && !(e.target.value === ".") && operator === ""){
+        numberA.pop();   
     }
-    if (numberA.length === 22 || numberA.length === 22) return;
     if (numberA[0] === "0" && e.target.value === "0" && numberA.length === 1 || numberB[0] === "0" && e.target.value === "0" && numberB.length === 1) return;
     if (e.target.value === "." && numberA.join("").includes(".") && operator === "" || e.target.value === "." && numberB.join("").includes(".")) {
         return;
@@ -51,9 +54,11 @@ function type(e) {
         if (numberB.length === 0 && e.target.value === ".") {
             numberB.push("0")
         }
+        if (numberB.length === 22) return;
         numberB.push(e.target.value);
         setDisplayValue();
     } else {
+        if (numberA.length === 22) return;
         result = undefined;
         numberA.push(e.target.value);
         setDisplayValue();
@@ -142,6 +147,6 @@ function divide(a, b) {
 function operate(a, b, o) {
     if (o === "+") return add(a, b);
     if (o === "-") return subtract(a, b);
-    if (o === "*") return multiply(a, b);
-    if (o === "/") return divide(a, b);
+    if (o === "×") return multiply(a, b);
+    if (o === "÷") return divide(a, b);
 }
