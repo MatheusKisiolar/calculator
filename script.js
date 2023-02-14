@@ -1,9 +1,10 @@
 const display = document.querySelector("#display");
-const numberA = [];
+const numberA = ["0"];
 const numberB = [];
 let result;
 let operator = "";
 let displayValue;
+setDisplayValue();
 
 document.querySelectorAll(".digit").forEach(x => x.addEventListener("click", type));
 document.querySelectorAll(".operator").forEach(x => x.addEventListener("click", setOperator));
@@ -11,11 +12,45 @@ document.querySelector("#equal").addEventListener("click", doOperation);
 document.querySelector("#undo").addEventListener("click", undo);
 document.querySelector("#clear").addEventListener("click", clear);
 
+document.addEventListener("keydown", (e) => {
+    document.querySelectorAll(".digit, .operator").forEach(button => {
+        if (e.key === button.value) {
+            button.click();
+        }
+    });
+    document.querySelectorAll("#clear, #undo, #equal").forEach(button => {
+        if (e.key === "Escape") {
+            if (button.id === "clear") {
+                button.click();
+            }
+        }
+        if (e.key === "Backspace") {
+            if (button.id === "undo") {
+                button.click();
+            }
+        }
+        if (e.key === "Enter") {
+            if (button.id === "equal") {
+                button.click();
+            }
+        }
+    });
+});
+
+
 function type(e) {
-    if (e.target.value === "." && numberA.join("").includes(".") || numberB.join("").includes(".")) {
+    if (numberA[0] === "0" && numberA.length === 1 && !(e.target.value === "0") && !(e.target.value === ".")){
+        numberA.pop();
+    }
+    if (numberA.length === 22 || numberA.length === 22) return;
+    if (numberA[0] === "0" && e.target.value === "0" && numberA.length === 1 || numberB[0] === "0" && e.target.value === "0" && numberB.length === 1) return;
+    if (e.target.value === "." && numberA.join("").includes(".") && operator === "" || e.target.value === "." && numberB.join("").includes(".")) {
         return;
     }
     if (operator) {
+        if (numberB.length === 0 && e.target.value === ".") {
+            numberB.push("0")
+        }
         numberB.push(e.target.value);
         setDisplayValue();
     } else {
@@ -30,6 +65,9 @@ function undo() {
         numberB.pop();
         setDisplayValue();
     } else {
+        if (numberA[0] === "0" && numberA.length === 1) {
+            return;
+        }
         numberA.pop();
         setDisplayValue();
     }
@@ -74,6 +112,7 @@ function doOperation() {
 function clear() {
     result = undefined;
     emptyData();
+    numberA.push("0");
     setDisplayValue();
 }
 
